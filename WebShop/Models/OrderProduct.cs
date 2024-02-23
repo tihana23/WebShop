@@ -3,11 +3,11 @@ using System.ComponentModel.DataAnnotations;
 
 namespace WebShop.Models
 {
-    public class OrderProducts
+    public class OrderProduct
     {
 
         public int Id { get; set; }
-        [Required]
+       
         public int OrderId { get; set; }
         public int ProductId { get; set; }
 
@@ -22,6 +22,7 @@ namespace WebShop.Models
         public decimal Total { get; set; }
 
 
-       
+        [NotMapped]
+        public string ProductName { get; set; }
     }
 }
