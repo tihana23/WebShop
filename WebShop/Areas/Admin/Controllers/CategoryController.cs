@@ -41,7 +41,8 @@ namespace WebShop.Areas.Admin.Controllers
             return View();
 
         }
-
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id, Name")] Category category) { 
             if(ModelState.IsValid)
             {
@@ -65,7 +66,78 @@ namespace WebShop.Areas.Admin.Controllers
 
             return View(category);
         }
-    }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id,[Bind("Id, Name")] Category category)
+        {
 
+            
+            if (id != category.Id)
+            {
+                return NotFound();
+
+            }
+           
+                if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(category);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException ex)
+                {
+                    if (!CategoryExist(category.Id))
+                    {
+
+                        return NotFound();
+                    }
+                    else { 
+                    throw ex;
+                    }
+                }return RedirectToAction(nameof(Index));
+
+            }
+            return View(category);
+
+
+        }
+        public async Task<IActionResult> Delete(int id)
+        {
+
+            var category = await _context.Category.FirstOrDefaultAsync(c => c.Id ==id);
+            if (category == null)
+            {
+                return NotFound();
+
+            }
+
+            return View(category);
+        }
+
+        [HttpPost,ActionName(
+            "Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+
+            var category = await _context.Category.FindAsync(id);
+            _context.Category.Remove(category);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+
+        }
+
+
+
+        private bool CategoryExist(int id)
+        {
+
+            return _context.Category.Any(Category => Category.Id == id);
+        }
+          
+        }
     }
-}
+    
+
+
