@@ -7,99 +7,83 @@ using WebShop.Models;
 
 namespace WebShop.Areas.Admin.Controllers
 {
-    [Area("Admin")]
-    [Authorize(Roles = "Admin")]
-    public class OrderController : Controller
+    [Area("User")]
+    [Authorize(Roles = "User")]
+    public class ProductUserController : Controller
     {
        
-
         private readonly ApplicationDbContext _context;
 
-        public OrderController(ApplicationDbContext context)
+        public ProductUserController(ApplicationDbContext context)
         {
             _context = context;
         }
-      
+       
         public async Task<IActionResult> Index()
         {
-            var orders = await _context.Order.ToListAsync();
-            return View(orders);
+            var products = await _context.Product.ToListAsync();
+            return View(products);
         }
-     
+        
         public async Task<IActionResult> Details(int id)
         {
 
-            var orders = await _context.Order.FirstOrDefaultAsync(c => c.Id == id);
+            var products = await _context.Product.FirstOrDefaultAsync(c => c.Id == id);
 
 
 
-            if (orders == null)
+            if (products == null)
             {
                 return NotFound();
 
             }
             //var orderProducts = await _context.OrderProduct.Where(p=>p.OrderId ==id).ToListAsync();
-            //order.OrderProducts = orderProducts;
-            return View(orders);
+            //order.products = products;
+            return View(products);
         }
-      
-      
-        public async Task<IActionResult> Create()
+       
+        public IActionResult Create()
         {
-            ViewBag.Users = await _context.Users.Select(user =>
-            new SelectListItem
-            {
-                Value = user.Id.ToString(),
-                Text = user.FirstName + " " + user.LastName
-            }
-            
-            ).ToListAsync();
+           
             return View();
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-  
-        public async Task<IActionResult> Create(Order order)
+       
+        public async Task<IActionResult> Create([Bind("Id,Name,Description,Quantity,Price")] Product products)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(order);
+                _context.Add(products);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
 
 
             }
-            return View(order);
+            return View(products);
 
         }
-      
+     
         public async Task<IActionResult> Edit(int id)
         {
 
-            var order = await _context.Order.FindAsync(id);
-            if (order == null)
+            var product = await _context.Product.FindAsync(id);
+            if (product == null)
             {
                 return NotFound();
 
             }
-            ViewBag.Users = await _context.Users.Select(user =>
-           new SelectListItem
-           {
-               Value = user.Id.ToString(),
-               Text = user.FirstName + " " + user.LastName
-           }
 
-           ).ToListAsync();
-            return View(order);
+            return View(product);
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-     
-        public async Task<IActionResult> Edit(int id, Order order)
+  
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,Quantity,Price")] Product products)
         {
 
 
-            if (id != order.Id)
+            if (id != products.Id)
             {
                 return NotFound();
 
@@ -109,12 +93,12 @@ namespace WebShop.Areas.Admin.Controllers
             {
                 try
                 {
-                    _context.Update(order);
+                    _context.Update(products);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException ex)
                 {
-                    if (!_context.Order.Any(o=>o.Id==id))
+                    if (!_context.Product.Any(o => o.Id == id))
                     {
 
                         return NotFound();
@@ -127,46 +111,38 @@ namespace WebShop.Areas.Admin.Controllers
                 return RedirectToAction(nameof(Index));
 
             }
-            return View(order);
+            return View(products);
 
 
         }
-      
+   
         public async Task<IActionResult> Delete(int id)
         {
 
-            var order = await _context.Order.FirstOrDefaultAsync(c => c.Id == id);
-            if (order == null)
+            var products = await _context.Product.FirstOrDefaultAsync(c => c.Id == id);
+            if (products == null)
             {
                 return NotFound();
 
             }
 
-            return View(order);
+            return View(products);
         }
 
         [HttpPost, ActionName(
             "Delete")]
         [ValidateAntiForgeryToken]
-   
+ 
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
 
-            var order = await _context.Order.FindAsync(id);
-            _context.Order.Remove(order);
+            var products = await _context.Product.FindAsync(id);
+            _context.Product.Remove(products);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
 
         }
 
 
-
-        private bool OrderExist(int id)
-        {
-
-            return _context.Order.Any(o => o.Id == id);
-        }
-
     }
 }
-

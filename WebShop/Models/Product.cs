@@ -18,8 +18,8 @@ namespace WebShop.Models
 
 
         [ForeignKey("ProductId")]
-        public virtual ICollection<ProductCategory> ProductCategories { get; set; }
+        public virtual ICollection<ProductCategory> ProductCategories { get; set; } = new List<ProductCategory>();
         [ForeignKey("ProductId")]
-        public virtual ICollection<OrderProduct> OrderProducts { get; set; }
+        public virtual ICollection<OrderProduct> OrderProducts { get; set; } = new List<OrderProduct>();
     }
 }

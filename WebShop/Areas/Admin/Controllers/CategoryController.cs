@@ -40,24 +40,25 @@ namespace WebShop.Areas.Admin.Controllers
         }
       
         public IActionResult Create() {
+           
             return View();
 
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Route("Admin/Category/Edit/{category}")]
-        public async Task<IActionResult> Create([Bind("Id, Name")] Category category) { 
-            if(ModelState.IsValid)
-            {
+       // [Route("Admin/Category/Edit/{category}")]
+        public async Task<IActionResult> Create([Bind("Id, Name")] Category category) {
+            if (ModelState.IsValid)
+         {
                 _context.Add(category);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
 
-
-            }return View(category);
+           }
+           return View(category);
         
         }
-        [Route("Admin/Category/Edit/{id}")]
+      
         public async Task<IActionResult> Edit(int id) {
 
             var category = await _context.Category.FindAsync(id);
@@ -71,7 +72,7 @@ namespace WebShop.Areas.Admin.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Route("Admin/Category/Edit/{id}/{category}")]
+     
         public async Task<IActionResult> Edit(int id,[Bind("Id, Name")] Category category)
         {
 
@@ -82,31 +83,32 @@ namespace WebShop.Areas.Admin.Controllers
 
             }
            
-                if (ModelState.IsValid)
-            {
-                try
-                {
+             if (ModelState.IsValid)
+           {
+              try
+               {
                     _context.Update(category);
                     await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException ex)
+               }
+               catch (DbUpdateConcurrencyException ex)
                 {
-                    if (!CategoryExist(category.Id))
-                    {
+                   if (!CategoryExist(category.Id))
+                   {
 
-                        return NotFound();
-                    }
-                    else { 
-                    throw ex;
-                    }
-                }return RedirectToAction(nameof(Index));
+                       return NotFound();
+                   }
+                   else { 
+                   throw ex;
+                   }
+               }
+        return RedirectToAction(nameof(Index));
 
-            }
-            return View(category);
+         }
+          return View(category);
 
 
         }
-        [Route("Admin/Category/Delete/{id}")]
+
         public async Task<IActionResult> Delete(int id)
         {
 
