@@ -19,12 +19,13 @@ namespace WebShop.Areas.Admin.Controllers
         {
             _context = context;
         }
+      
         public async Task<IActionResult> Index()
         {
             var orders = await _context.Order.ToListAsync();
             return View(orders);
         }
-
+     
         public async Task<IActionResult> Details(int id)
         {
 
@@ -41,8 +42,8 @@ namespace WebShop.Areas.Admin.Controllers
             //order.OrderProducts = orderProducts;
             return View(orders);
         }
-        [HttpPost]
-        [ValidateAntiForgeryToken]
+      
+      
         public async Task<IActionResult> Create()
         {
             ViewBag.Users = await _context.Users.Select(user =>
@@ -57,6 +58,7 @@ namespace WebShop.Areas.Admin.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
+  
         public async Task<IActionResult> Create([Bind("Id,DateCreated,Total,UserId")] Order order)
         {
             if (ModelState.IsValid)
@@ -70,7 +72,7 @@ namespace WebShop.Areas.Admin.Controllers
             return View(order);
 
         }
-
+      
         public async Task<IActionResult> Edit(int id)
         {
 
@@ -85,6 +87,7 @@ namespace WebShop.Areas.Admin.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
+     
         public async Task<IActionResult> Edit(int id, [Bind("Id,DateCreated,Total,UserId\"")] Order order)
         {
 
@@ -121,6 +124,7 @@ namespace WebShop.Areas.Admin.Controllers
 
 
         }
+      
         public async Task<IActionResult> Delete(int id)
         {
 
@@ -137,6 +141,7 @@ namespace WebShop.Areas.Admin.Controllers
         [HttpPost, ActionName(
             "Delete")]
         [ValidateAntiForgeryToken]
+   
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
 
