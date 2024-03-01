@@ -8,6 +8,7 @@ namespace WebShop.Areas.Admin.Controllers
 {
     [Area("Admin")]
     [Authorize(Roles = "Admin")]
+
     public class CategoryController : Controller
     {
 
@@ -18,12 +19,13 @@ namespace WebShop.Areas.Admin.Controllers
             _context = context;
         }
 
+      
         public async Task<IActionResult> Index()
         {
             var categories = await _context.Category.ToListAsync();
             return View(categories);
         }
-
+     
         public async Task<IActionResult> Details(int id) {
 
             var category = await _context.Category.FirstOrDefaultAsync(c => c.Id == id);
@@ -36,13 +38,14 @@ namespace WebShop.Areas.Admin.Controllers
 
             return View(category);
         }
-
+      
         public IActionResult Create() {
             return View();
 
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Route("Admin/Category/Edit/{category}")]
         public async Task<IActionResult> Create([Bind("Id, Name")] Category category) { 
             if(ModelState.IsValid)
             {
@@ -54,7 +57,7 @@ namespace WebShop.Areas.Admin.Controllers
             }return View(category);
         
         }
-
+        [Route("Admin/Category/Edit/{id}")]
         public async Task<IActionResult> Edit(int id) {
 
             var category = await _context.Category.FindAsync(id);
@@ -68,6 +71,7 @@ namespace WebShop.Areas.Admin.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Route("Admin/Category/Edit/{id}/{category}")]
         public async Task<IActionResult> Edit(int id,[Bind("Id, Name")] Category category)
         {
 
@@ -102,6 +106,7 @@ namespace WebShop.Areas.Admin.Controllers
 
 
         }
+        [Route("Admin/Category/Delete/{id}")]
         public async Task<IActionResult> Delete(int id)
         {
 
@@ -118,6 +123,7 @@ namespace WebShop.Areas.Admin.Controllers
         [HttpPost,ActionName(
             "Delete")]
         [ValidateAntiForgeryToken]
+      
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
 
