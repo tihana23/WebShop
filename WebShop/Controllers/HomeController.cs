@@ -16,10 +16,12 @@ namespace WebShop.Controllers
         private readonly ApplicationDbContext _context;
         public const string SessionKeyName = "cart";
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, ApplicationDbContext context)
         {
             _logger = logger;
+            _context = context;
         }
+      
 
         public IActionResult Index()
         {
