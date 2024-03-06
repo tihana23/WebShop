@@ -46,15 +46,10 @@ namespace WebShop.Areas.Admin.Controllers
       
         public async Task<IActionResult> Create()
         {
-            ViewBag.Users = await _context.Users.Select(user =>
-            new SelectListItem
-            {
-                Value = user.Id.ToString(),
-                Text = user.FirstName + " " + user.LastName
-            }
-            
-            ).ToListAsync();
-            return View();
+            Order order = new Order();
+            order.DateCreated = DateTime.Now;
+        order.Users = await GetAllUsers();
+            return View(order);
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -82,14 +77,7 @@ namespace WebShop.Areas.Admin.Controllers
                 return NotFound();
 
             }
-            ViewBag.Users = await _context.Users.Select(user =>
-           new SelectListItem
-           {
-               Value = user.Id.ToString(),
-               Text = user.FirstName + " " + user.LastName
-           }
-
-           ).ToListAsync();
+            ViewBag.Users = await GetAllUsers();
             return View(order);
         }
         [HttpPost]
@@ -165,6 +153,19 @@ namespace WebShop.Areas.Admin.Controllers
         {
 
             return _context.Order.Any(o => o.Id == id);
+        }
+
+        private async Task<List<SelectListItem>> GetAllUsers() {
+
+           return await _context.Users.Select(user =>
+                new SelectListItem
+                {
+                    Value = user.Id.ToString(),
+                    Text = user.FirstName + " " + user.LastName
+                }
+
+                ).ToListAsync();
+
         }
 
     }

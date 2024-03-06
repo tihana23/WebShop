@@ -1,10 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace WebShop.Models
 {
     public class Order
     {
+
         public int Id { get; set; }
         [Required]
         public string UserId { get; set; }
@@ -49,5 +51,7 @@ namespace WebShop.Models
 
         [ForeignKey("OrderId")]
         public virtual ICollection<OrderProduct> OrderProducts { get; set; } = new List<OrderProduct>();
+        [NotMapped]
+        public List<SelectListItem> Users { get; set; } = new List<SelectListItem>();
     }
 }
