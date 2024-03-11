@@ -34,11 +34,23 @@ namespace WebShop.Controllers
         }
 
 
-        public async Task<IActionResult> Product(int? categodyId) 
+        public async Task<IActionResult> Product(int? categoryId) 
         {
         
-        var productsIds = await _context.ProductCategory.Where(p => p.Id==categodyId).Select(p => p.ProductId).ToListAsync();
-            var products = await _context.Product.Where(p=>productsIds.Contains(p.Id)).ToListAsync();
+            var products = await _context.Product.ToListAsync();
+            if (categoryId != null) {
+
+                var productsIds = await _context.ProductCategory.Where(p => p.CategoryId == categoryId).Select(p => p.ProductId).ToListAsync();
+                 products = products.Where(p => productsIds.Contains(p.Id)).ToList();
+
+            }
+
+           // var products = categodyId != null
+//? await _context.Product.Where(p => _context.ProductCategory.Any(pc => pc.ProductId == p.Id && pc.CategoryId == categodyId)).ToListAsync()
+//: await _context.Product.ToListAsync();
+
+
+
             ViewBag.Categories = await _context.Category.Select(c =>
             new SelectListItem
             {

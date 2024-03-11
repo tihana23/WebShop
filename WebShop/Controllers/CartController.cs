@@ -45,9 +45,9 @@ namespace WebShop.Controllers
 
                 cart.Add(cartItem);
 
-                HttpContext.Session.SetObjectAsJson(SessionKeyName, cart); // dodaj ga u sesiju
+               
             }
-
+            HttpContext.Session.SetObjectAsJson(SessionKeyName, cart); // dodaj ga u sesiju
             return RedirectToAction(nameof(Index));
 
 

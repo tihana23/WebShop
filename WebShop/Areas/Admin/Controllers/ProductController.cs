@@ -44,26 +44,46 @@ namespace WebShop.Areas.Admin.Controllers
        
         public IActionResult Create()
         {
-           
+
+            var categories = _context.Category.Select(c => new SelectListItem
+            {
+                Value = c.Id.ToString(),
+                Text = c.Name
+            }).ToList();
+
+            ViewBag.Categories = categories;
             return View();
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
        
-        public async Task<IActionResult> Create([Bind("Id,Name,Description,Quantity,Price")] Product products)
+        public async Task<IActionResult> Create([Bind("Id,Name,Description,Quantity,Price")] Product products, int CategoryId)
         {
             if (ModelState.IsValid)
             {
                 _context.Add(products);
+                await _context.SaveChangesAsync(); 
+
+            
+                var productCategory = new ProductCategory
+                {
+                    ProductId = products.Id,
+                    CategoryId = CategoryId
+                };
+                _context.Add(productCategory);
                 await _context.SaveChangesAsync();
+
                 return RedirectToAction(nameof(Index));
-
-
             }
+         
+            ViewBag.Categories = _context.Category.Select(c => new SelectListItem
+            {
+                Value = c.Id.ToString(),
+                Text = c.Name
+            }).ToList();
             return View(products);
-
         }
-     
+
         public async Task<IActionResult> Edit(int id)
         {
 

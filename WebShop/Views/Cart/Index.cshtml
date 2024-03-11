@@ -1,5 +1,6 @@
 ﻿@using WebShop.Extensions
 @model List<CartItem>
+
 @{
 
     ViewData["Title"] = "Cart";
@@ -16,7 +17,7 @@ else
 {
     
     <div class="text-center">
-    <h2 class="display4">"Cart items"</h2> </div>
+    <h2 class="display4">Cart items</h2> </div>
     <table class="table">
         <thead>
             <tr>
@@ -42,7 +43,7 @@ else
                         @item.Product.Price.ToString("0.00")€
                 </td>
                 <td>
-                    @item.Product.Quantity
+                    @item.Quantity
                 </td>
                     <td>
                         @item.GetTotal().ToString("0.00")€
@@ -72,5 +73,5 @@ else
 
     </table>
     <a class="btn btn-primary btn-lg float-left" asp-controller="Home" asp-action="Product">Continue shoping</a>
-    <a class="btn btn-sucess btn-lg float-right" asp-controller="Home" asp-action="Order">Order products</a>
+    <a class="btn btn-success btn-lg float-right" asp-controller="Home" asp-action="Order">Order products</a>
 }

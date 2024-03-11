@@ -44,7 +44,16 @@ namespace WebShop.Areas.Admin.Controllers
        
         public IActionResult Create()
         {
-           
+
+            var categories = _context.Category.Select(c => new SelectListItem
+            {
+                Value = c.Id.ToString(),
+                Text = c.Name
+            }).ToList();
+
+            // Pass the categories to the view via ViewBag or ViewData
+            ViewBag.Categories = categories;
+
             return View();
         }
         [HttpPost]
