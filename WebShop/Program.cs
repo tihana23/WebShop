@@ -45,7 +45,14 @@ app.MapControllerRoute(
 
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+var scope = app.Services.CreateScope();
+var serviceProvider = scope.ServiceProvider;
 
+var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+if (!await roleManager.RoleExistsAsync("User"))
+{
+    await roleManager.CreateAsync(new IdentityRole("User"));
+}
 app.MapRazorPages();
 
 app.Run();

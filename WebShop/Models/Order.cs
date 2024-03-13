@@ -46,7 +46,8 @@ namespace WebShop.Models
         [StringLength(50)]
         public string BillingZipCode { get; set; }
     
-        public string Message { get; set; }
+        public string? Message { get; set; }
+        
 
 
         [ForeignKey("OrderId")]

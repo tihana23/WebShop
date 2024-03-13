@@ -118,7 +118,7 @@ namespace WebShop.Controllers
                     }
                 }
             }
-            return RedirectToAction(nameof(Order),new { errors = modelErrors});
+            return RedirectToAction(nameof(Order),new { error = modelErrors});
 
 
         }

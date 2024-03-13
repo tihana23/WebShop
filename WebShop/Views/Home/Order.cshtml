@@ -58,6 +58,7 @@
         <div class="text-center">
             <h5>Personal info</h5>
         </div>
+
             @if (ViewBag.Error.Count > 0)
             {
                 <div class="alert alert-danger text-center" role="alert">
@@ -67,6 +68,7 @@
                     }
                 </div>
             }
+    
             <form method="POST" asp-controller="Home" asp-action="CreateOrder">
         <input type="hidden" name="Total" value="@ViewBag.TotalPrice.ToString("0.00")"/>
         <div class="form-row">

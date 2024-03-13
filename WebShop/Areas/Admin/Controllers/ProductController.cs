@@ -42,100 +42,111 @@ namespace WebShop.Areas.Admin.Controllers
             return View(products);
         }
        
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
 
-            var categories = _context.Category.Select(c => new SelectListItem
+            ViewBag.Categories = await _context.Category.Select(c => new SelectListItem
             {
                 Value = c.Id.ToString(),
                 Text = c.Name
-            }).ToList();
+            }).ToListAsync();
 
-            ViewBag.Categories = categories;
+           
             return View();
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-       
-        public async Task<IActionResult> Create([Bind("Id,Name,Description,Quantity,Price")] Product products, int CategoryId)
+        public async Task<IActionResult> Create( Product product)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(products);
-                await _context.SaveChangesAsync(); 
+                List<ProductCategory> productCategories = new List<ProductCategory>();
 
-            
-                var productCategory = new ProductCategory
+                foreach (var categoryId in product.Categories)
                 {
-                    ProductId = products.Id,
-                    CategoryId = CategoryId
-                };
-                _context.Add(productCategory);
+                    var productCategory = new ProductCategory
+                    {
+                        CategoryId = categoryId,
+                        ProductId = product.Id
+                    };
+                    productCategories.Add(productCategory);
+                }
+                product.ProductCategories = productCategories;
+                _context.Add(product);
                 await _context.SaveChangesAsync();
-
                 return RedirectToAction(nameof(Index));
             }
-         
-            ViewBag.Categories = _context.Category.Select(c => new SelectListItem
-            {
-                Value = c.Id.ToString(),
-                Text = c.Name
-            }).ToList();
-            return View(products);
+            return View(product);
         }
 
         public async Task<IActionResult> Edit(int id)
         {
-
-            var product = await _context.Product.FindAsync(id);
+            var product = await _context.Product
+                .Include(p=>p.ProductCategories)
+                .FirstOrDefaultAsync(p => p.Id == id);
             if (product == null)
             {
                 return NotFound();
-
             }
-
+            ViewBag.Categories = await _context.Category.Select(c => new SelectListItem
+            {
+                Value = c.Id.ToString(),
+                Text = c.Name
+            }).ToListAsync();
             return View(product);
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-  
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,Quantity,Price")] Product products)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,Quantity,Price")] Product product, int CategoryId)
         {
-
-
-            if (id != products.Id)
+            if (id != product.Id)
             {
                 return NotFound();
-
             }
 
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(products);
+                    _context.Update(product);
+                    await _context.SaveChangesAsync();
+
+                    // Update or create the ProductCategory link
+                    var productCategory = await _context.ProductCategory.FirstOrDefaultAsync(pc => pc.ProductId == product.Id);
+                    if (productCategory != null)
+                    {
+                        productCategory.CategoryId = CategoryId;
+                    }
+                    else
+                    {
+                        _context.ProductCategory.Add(new ProductCategory { ProductId = product.Id, CategoryId = CategoryId });
+                    }
                     await _context.SaveChangesAsync();
                 }
-                catch (DbUpdateConcurrencyException ex)
+                catch (DbUpdateConcurrencyException)
                 {
-                    if (!_context.Product.Any(o => o.Id == id))
+                    if (!_context.Product.Any(e => e.Id == id))
                     {
-
                         return NotFound();
                     }
                     else
                     {
-                        throw ex;
+                        throw;
                     }
                 }
                 return RedirectToAction(nameof(Index));
-
             }
-            return View(products);
 
+            ViewBag.SelectedCategoryId = CategoryId;
+            ViewBag.Categories = _context.Category.Select(c => new SelectListItem
+            {
+                Value = c.Id.ToString(),
+                Text = c.Name
+            }).ToList();
 
+            return View(product);
         }
-   
+
         public async Task<IActionResult> Delete(int id)
         {
 
